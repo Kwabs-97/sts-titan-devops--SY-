@@ -1,0 +1,14 @@
+ Docker Compose Orchestrationpart 1
+    Deploy complex multicontainer applications
+
+part 1.
+1. Create docker-compose.yml with:
+   - WordPress
+   - MySQL
+   - phpMyAdmin
+   - Redis cache
+
+- create services in docker compose yml by pulling respective images locally
+- images pulled locally
+- created services with restart policies, volume managements
+- saving sensitive data in .env
