@@ -1,0 +1,24 @@
+part 1.
+1. container should run on nginx using official nginx image. docker pull nginx to get official nginx image locally
+2. expose container's port 80 and publish it to host's port 8080 (-p 8080:80)
+3. set's environment variable NGINX_HOST=localhost ( -e NGINX_HOST=localhost)
+4. name the container "web-server" (--name webserver)
+
+putting it all together
+
+docker run --name web-server -p 8080:80 -e NGINX_HOST=localhost nginx
+
+part2.
+1. check container logs (docker logs <container_name> or docker logs <container_id>)
+2. exec into container and modify index.html (index.html is the file rendered on localhost:8080 so any changes to it should reflect the changes)
+3. Verify changes are live by accessing the page and confirming edits (points to point 2)
+4. start, stop and remove container (docker container start <container_id>, docker container stop <container_id>, docker container rm <container_id>). I prefer to use container id as reference points because more often than not I mispell container names.
+
+
+experience with this challenge
+--------------------------------
+everything was smooth until I had to modify index.html
+after exec into the container, I cd into /usr/share/nginx/html and I wanted to use nano to modify index.html (nano index.html)
+I realized nano wasn't installed and so i installed it (apt-get udpate && apt-get install -y nano). used this command because the os is debian.
+
+eveything worked!
