@@ -20,5 +20,15 @@ experience with this challenge
 everything was smooth until I had to modify index.html
 after exec into the container, I cd into /usr/share/nginx/html and I wanted to use nano to modify index.html (nano index.html)
 I realized nano wasn't installed and so i installed it (apt-get udpate && apt-get install -y nano). used this command because the os is debian.
-
 eveything worked!
+
+and Oh i later used nginx:1.26.2-alpine-slim for this work since we don't need the full functionality of nginx. it's a very lightweight image for the workload here. 
+(to install nano on alpine os based images, use apk add nano)
+bonus challenge
+----------------
+Bonus challenge: Use docker compose to setup this (infrastructure as code) and add a deploy script to make this process easy
+Try deploying grafana and prometheus images to monitor this as well with some alerts
+
+1. created a new directory named bonus
+2. dockercompose and write services
+ 
