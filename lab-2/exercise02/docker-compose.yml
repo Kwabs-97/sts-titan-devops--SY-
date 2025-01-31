@@ -7,11 +7,16 @@ services:
     networks:
       - frontend
       - backend
+    secrets:
+      - wordpress_db_host
+      - wordpress_db_user
+      - wordpress_db_password
+      - wordpress_db_name
     environment:
-      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
-      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+      WORDPRESS_DB_HOST_FILE: /run/secrets/wordpress_db_host
+      WORDPRESS_DB_USER_FILE: /run/secrets/wordpress_db_user
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/wordpress_db_password
+      WORDPRESS_DB_NAME_FILE: /run/secrets/wordpress_db_name
     volumes:
       - wordpress:/var/www/html
     depends_on:
@@ -20,10 +25,14 @@ services:
   mysql:
     image: mysql:8.0
     restart: always
+    secrets:
+      - mysql_database
+      - mysql_user
+      - mysql_password
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE_FILE: /run/secrets/mysql_database
+      MYSQL_USER_FILE: /run/secrets/mysql_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
       MYSQL_RANDOM_ROOT_PASSWORD: "1"
     networks:
       - backend
@@ -44,6 +53,24 @@ services:
     environment:
       - PMA_ARBITRARY=1
 
+secrets:
+  #wordpress secrets
+  wordpress_db_host:
+    file: ./secrets/wordpress/wordpress_db_host.txt
+  wordpress_db_user:
+    file: ./secrets/wordpress/wordpress_db_user.txt
+  wordpress_db_name:
+    file: ./secrets/wordpress/wordpress_db_name.txt
+  wordpress_db_password:
+    file: ./secrets/wordpress/wordpress_db_password.txt
+
+  #mysql secrets
+  mysql_database:
+    file: ./secrets/mysql/mysql_database.txt
+  mysql_password:
+    file: ./secrets/mysql/mysql_password.txt
+  mysql_user:
+    file: ./secrets/mysql/mysql_user.txt
 volumes:
   wordpress:
   db:

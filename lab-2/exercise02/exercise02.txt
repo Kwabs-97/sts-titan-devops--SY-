@@ -17,3 +17,6 @@ part 1.
 -- for network isolation
 since wordpress is a public facing server, I mean it's accessible and mysql is a private facing server.
 it's best practice if they run separate servers.
+
+-- bonus ---
+use docker secrets with docker compose for secrets
