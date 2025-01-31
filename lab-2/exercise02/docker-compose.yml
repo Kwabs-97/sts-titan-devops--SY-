@@ -30,7 +30,6 @@ services:
     image: redis
     restart: unless-stopped
 
-  version: "3.1"
   phpmyadmin:
     image: phpmyadmin
     restart: always
