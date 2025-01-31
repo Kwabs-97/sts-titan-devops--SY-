@@ -48,5 +48,5 @@ volumes:
   wordpress:
   db:
 networks:
-  - frontend
-  - backend
+  frontend:
+  backend:
