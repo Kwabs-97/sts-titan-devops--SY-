@@ -4,6 +4,9 @@ services:
     restart: always
     ports:
       - 8080:80
+    networks:
+      - frontend
+      - backend
     environment:
       WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
@@ -22,6 +25,8 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    networks:
+      - backend
     volumes:
       - db:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -42,3 +47,6 @@ services:
 volumes:
   wordpress:
   db:
+networks:
+  - frontend
+  - backend
