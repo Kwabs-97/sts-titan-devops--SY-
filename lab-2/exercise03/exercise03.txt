@@ -1,0 +1,2 @@
+- mysql and php my admin is already set up in exercise 2.
+- use grafana and prometheus to monitor the application

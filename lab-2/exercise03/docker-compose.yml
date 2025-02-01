@@ -1,0 +1,68 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    secrets:
+      - mysql_database
+      - mysql_user
+      - mysql_password
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE_FILE: /run/secrets/mysql_database
+      MYSQL_USER_FILE: /run/secrets/mysql_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    networks:
+      - backend
+    volumes:
+      - db:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
+  grafana:
+    image: grafana/grafana-oss
+    restart: unless-stopped
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_NAME: "Main Org."
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-storage:/var/lib/grafana
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/prometheus
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    command:
+      - "--web.enable-lifecycle"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+  mysql-exporter:
+    image: prom/mysqld-exporter
+    command:
+      - --config.my-cnf=/cfg/.my.cnf
+      - --mysqld.address=192.168.8.103:3306
+    volumes:
+      - "./.my.cnf:/cfg/.my.cnf"
+    ports:
+      - 9104:9104
+volumes:
+  grafana-storage: {}
+  prometheus-storage: {}
+  db:
+
+networks:
+  backend:
+
+secrets:
+  #mysql secrets
+  mysql_database:
+    file: ./secrets/mysql/mysql_database.txt
+  mysql_password:
+    file: ./secrets/mysql/mysql_password.txt
+  mysql_user:
+    file: ./secrets/mysql/mysql_user.txt
