@@ -21,6 +21,11 @@ services:
       - wordpress:/var/www/html
     depends_on:
       - mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
   mysql:
     image: mysql:8.0
@@ -41,9 +46,29 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 3306:3306
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-p$MYSQL_ROOT_PASSWORD",
+        ]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
   redis:
     image: redis
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
   phpmyadmin:
     image: phpmyadmin
@@ -52,9 +77,13 @@ services:
       - 5000:80
     environment:
       - PMA_ARBITRARY=1
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
 
 secrets:
-  #wordpress secrets
   wordpress_db_host:
     file: ./secrets/wordpress/wordpress_db_host.txt
   wordpress_db_user:
@@ -64,16 +93,17 @@ secrets:
   wordpress_db_password:
     file: ./secrets/wordpress/wordpress_db_password.txt
 
-  #mysql secrets
   mysql_database:
     file: ./secrets/mysql/mysql_database.txt
   mysql_password:
     file: ./secrets/mysql/mysql_password.txt
   mysql_user:
     file: ./secrets/mysql/mysql_user.txt
+
 volumes:
   wordpress:
   db:
+
 networks:
   frontend:
   backend:
